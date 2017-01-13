@@ -1,0 +1,23 @@
+cc -MM *.c > .depend
+cc -g -Wall -Werror   -c -o server.o server.c
+cc -g -Wall -Werror   -c -o server_thread.o server_thread.c
+cc -g -Wall -Werror   -c -o request.o request.c
+cc -g -Wall -Werror   -c -o common.o common.c
+cc   server.o server_thread.o request.o common.o -lm -lpthread -lpopt  -o server
+cc -g -Wall -Werror   -c -o client_simple.o client_simple.c
+cc   client_simple.o common.o -lm -lpthread -lpopt  -o client_simple
+cc -g -Wall -Werror   -c -o client.o client.c
+cc   client.o common.o -lm -lpthread -lpopt  -o client
+cc -g -Wall -Werror   -c -o fileset.o fileset.c
+cc   fileset.o common.o -lm -lpthread -lpopt  -o fileset
+Running: /cad2/ece344f/tester/scripts/lab5-01-webserver.py 
+webserver test
+starting server at port 9073
+plot-cachesize.out: run time with 16384 cache size is 1.4049. We expect it to lie in between 1.5249 and 2.794473.
+plot-cachesize.out: run time with 65536 cache size is 1.1955. We expect it to lie in between 1.29315 and 2.54043.
+plot-cachesize.out: run time with 1048576 cache size is 2.2031. We expect it to lie in between 1.02432 and 2.117025.
+plot-cachesize.out: deviation with 1048576 cache size is 1.9622. This is high. Consider running the tester again.
+Mark for webserver test is 8 out of 14
+FAIL
+
+You have received 8 marks out of a total of 14 marks.

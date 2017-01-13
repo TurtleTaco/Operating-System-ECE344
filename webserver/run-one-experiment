@@ -1,0 +1,65 @@
+#!/bin/bash
+
+#
+# This script takes the same parameters as the ./server program, 
+# as well as a fileset parameter that is passed to the client program.
+# 
+# This script runs the server program, and then it runs the client program
+# several times.
+#
+# It produces the average run time and the (population) standard deviation
+# across multiple client runs.
+#
+# The client run times are also stored in the file called run.out
+#
+
+if [ $# -ne 5 ]; then
+   echo "Usage: ./run-one-experiment port nr_threads max_requests max_cache_size fileset_dir.idx" 1>&2
+   exit 1
+fi
+
+PORT=$1
+NR_THREADS=$2
+MAX_REQUESTS=$3
+CACHE_SIZE=$4
+FILESET=$5
+
+./server $PORT $NR_THREADS $MAX_REQUESTS $CACHE_SIZE > /dev/null &
+SERVER_PID=$!
+trap 'kill -9 $SERVER_PID 2> /dev/null; sleep 5; exit 1' 1 2 3 9 15
+
+SUM=0
+i=1
+n=5
+
+# give some time for the server to start up
+sleep 1
+
+rm -f run.out
+while [ $i -le $n ]; do
+    ./client -t localhost $PORT 100 10 $FILESET >> run.out;
+    if [ $? -ne 0 ]; then
+	echo "error: client nr $i failed" 1>&2
+	kill -9 $SERVER_PID 2> /dev/null;
+	sleep 5;
+	exit 1;
+    fi
+    i=$[$i+1];
+done
+
+if [ ! -f run.out ]; then
+    echo "run.out not found" 1>&2;
+    exit 1
+fi
+LINES=$(wc -l < run.out)
+if [ "$LINES" != "$n" ]; then
+    echo "All $n runs were not successful" 1>&2;
+    exit 1;
+fi
+
+# print the average and the standard devation of the run times
+awk '{sum += $4; dev += $4^2} END {printf "%.4f, %.4f\n", sum/NR, sqrt(dev/NR-(sum/NR)^2)}' run.out
+# we add a sleep or else we may occasionally get bind() errors
+kill -9 $SERVER_PID 2> /dev/null;
+sleep 5;
+exit 0
