@@ -1,0 +1,6 @@
+remote: fatal: no such ref: Lab3-end        
+fatal: sent error to the client: git upload-archive: archiver died with error
+remote: git upload-archive: archiver died with error
+tar: This does not look like a tar archive
+tar: Exiting with failure status due to previous errors
+git checkout was not successful
