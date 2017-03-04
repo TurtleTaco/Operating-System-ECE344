@@ -122,7 +122,7 @@ CREATE TABLE Grade (
 -- consistent with those tables.
 CREATE TABLE Result (
   group_id integer PRIMARY KEY REFERENCES AssignmentGroup,
-  mark real NOT NULL,
+  mark real NOT NULL,                                                              //NOT A PERCENTAGE
   released boolean DEFAULT false
 ) ;
 
@@ -167,9 +167,10 @@ solo?
 	from RubricItem natural_join Grade
 	group by group_id
 	
-• How is the total grade for a group on an assignment recorded? Can it be released before the a grade was
+• How is the total grade for a group on an assignment recorded? Can it be released before a grade was
 assigned?
-
+	No, cannot insert NULL for grade while keeping released to be true.
+	
 	insertion syntax:
 		CREATE TABLE clients (id SERIAL, email VARCHAR(30));
 	
