@@ -72,7 +72,7 @@ CREATE TABLE Submissions (
 -- For a given group id, username is the username of the TA or instructor 
 -- assigned to grade them.
 CREATE TABLE Grader (
-  group_id integer PRIMARY KEY REFERENCES AssignmentGroup,
+  group_id integer PRIMARY KEY REFERENCES AssignmentGroup,                      //even not PRIMARY KEY inline REFERENCES is default PRIMARY KEY
   username varchar(25) REFERENCES MarkusUser
 ) ;
 
@@ -125,3 +125,29 @@ CREATE TABLE Result (
   mark real NOT NULL,
   released boolean DEFAULT false
 ) ;
+
+
+• How would the database record that a student is working solo on an assignment?
+	select * from membership;
+
+	 username | group_id 
+	----------+----------
+ 	 s1       |     2000
+ 	 s2       |     2000
+ 	 s3       |     2010
+
+• How would the database record that an assignment does not permit groups, that is, all students must work
+solo?
+	CREATE TABLE Membership (
+  	username varchar(25) REFERENCES MarkusUser,
+  	group_id integer REFERENCES AssignmentGroup,
+  	PRIMARY KEY (username, group_id) ==> PRIMARY KEY group_id
+	) ;
+
+• Why doesn’t the Grader table have to record which assignment the grader is grading the group on?
+• Can different graders mark the various members of a group in an assignment?
+• Can different graders mark the various elements of the rubric for an assignment?
+• In a rubric, what is the difference between “out of” and “weight”?
+• How would one compute a group’s total grade for an assignment?
+• How is the total grade for a group on an assignment recorded? Can it be released before the a grade was
+assigned?
