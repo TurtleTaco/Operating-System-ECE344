@@ -146,8 +146,10 @@ solo?
 	) ;
 
 • Why doesn’t the Grader table have to record which assignment the grader is grading the group on?
+	A group is always being graded by the same grader
 	
 • Can different graders mark the various members of a group in an assignment?
+	NO because group_id is  primary key in Grader, only one group_id occurs per id in Grader
 • Can different graders mark the various elements of the rubric for an assignment?
 • In a rubric, what is the difference between “out of” and “weight”?
 • How would one compute a group’s total grade for an assignment?
