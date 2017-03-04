@@ -73,7 +73,7 @@ CREATE TABLE Submissions (
 -- assigned to grade them.
 CREATE TABLE Grader (
   group_id integer PRIMARY KEY REFERENCES AssignmentGroup,                      //even not PRIMARY KEY inline REFERENCES is default PRIMARY KEY
-  username varchar(25) REFERENCES MarkusUser
+  username varchar(25) REFERENCES MarkusUser						//GROUP_ID IS ALWAYS UNIQUE
 ) ;
 
 -- An item in the grading rubric for an assignment. We store the name of the 
@@ -82,8 +82,8 @@ CREATE TABLE Grader (
 -- assignment do not have to sum to any particular value.  However, a typical
 -- scenario might be to have them sum to 100 or to 1.0.
 CREATE TABLE RubricItem (                                                       //one item
-  rubric_id integer PRIMARY KEY,
-  assignment_id integer NOT NULL REFERENCES Assignment,
+  rubric_id integer PRIMARY KEY,						//(assignment_id, name, rubric_id) is a key and rebric_id is primary key key ==j
+  assignment_id integer NOT NULL REFERENCES Assignment,					//RUBRIC_ID IS ALWAYS UNIQUE
   name varchar(50) NOT NULL,                                                   //name for thie item
   out_of integer NOT NULL,                                                     //total mark for this item
   weight real NOT NULL,                                                         //how many percentage for whole assignment
@@ -94,8 +94,8 @@ CREATE TABLE RubricItem (                                                       
 CREATE TABLE Grade (
   group_id integer REFERENCES AssignmentGroup,
   rubric_id integer REFERENCES RubricItem,
-  grade integer NOT NULL,                                                     //grade on item of a group
-  PRIMARY KEY (group_id, rubric_id)
+  grade integer NOT NULL,                                                     //how many marks a group_id get on a rubric item
+  PRIMARY KEY (group_id, rubric_id)						//outof the total mark of this rubric item (out_of in RubricItem)
 ) ;
 
 
@@ -146,13 +146,27 @@ solo?
 	) ;
 
 • Why doesn’t the Grader table have to record which assignment the grader is grading the group on?
-	A group is always being graded by the same grader
+	AssignmentGroup when insert, for different assignment_id, group_id is incremented even if it is the
+	same group, so group_id -> assignment_id is 1 to 1 relationship.
 	
 • Can different graders mark the various members of a group in an assignment?
-	NO because group_id is  primary key in Grader, only one group_id occurs per id in Grader
+	No because group_id is  primary key in Grader, in one group assignment is marked only once, not
+	per member basis.
+	
 • Can different graders mark the various elements of the rubric for an assignment?
+	No, if yes, an assignment has multiple rubrics items, they are marked by different grader, so
+	one group_id submitted an assignment is being marked by different grader, not allowed because
+	Grader enforces one group_id is only marked by one grader.
+	
 • In a rubric, what is the difference between “out of” and “weight”?
+	out_of is the total mark for this rubric item
+	weight is the percentage of this rubric item in the total assignment mark.
+	
 • How would one compute a group’s total grade for an assignment?
+	select sum(out_of * weight)/sum(grade * weight)
+	from RubricItem natural_join Grade
+	group by group_id
+	
 • How is the total grade for a group on an assignment recorded? Can it be released before the a grade was
 assigned?
 
