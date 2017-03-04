@@ -128,6 +128,7 @@ CREATE TABLE Result (
 
 
 • How would the database record that a student is working solo on an assignment?
+
 	select * from membership;
 
 	 username | group_id 
@@ -145,9 +146,42 @@ solo?
 	) ;
 
 • Why doesn’t the Grader table have to record which assignment the grader is grading the group on?
+	
 • Can different graders mark the various members of a group in an assignment?
 • Can different graders mark the various elements of the rubric for an assignment?
 • In a rubric, what is the difference between “out of” and “weight”?
 • How would one compute a group’s total grade for an assignment?
 • How is the total grade for a group on an assignment recorded? Can it be released before the a grade was
 assigned?
+
+	insertion syntax:
+		CREATE TABLE clients (id SERIAL, email VARCHAR(30));
+	
+		(insert into every attribute)
+		insert into clients values 
+		(35, 'tytyty@gmail.com'),
+		(11, 'instigator@gmail.com');
+		select * from clients;
+ 		id |        email         
+		---+----------------------
+ 		35 | tytyty@gmail.com
+ 		11 | instigator@gmail.com
+		
+		(insert into only one attribute)
+		insert into clients(email) values 
+		('deedee@gmail.com'), 
+		('ruby.max@gmail.com');
+		select * from clients;
+ 		id |        email         
+		---+----------------------
+ 		35 | tytyty@gmail.com
+ 		11 | instigator@gmail.com
+  		 1 | deedee@gmail.com			==>serial id
+  		 2 | ruby.max@gmail.com			==>serial id
+		 
+		select setval('clients_id_seq', 35);    ==>set serial counter "setval"
+ 		setval 
+		-------
+                    35
+		(next time without specifying id use 36, remember not to set 'client_id_seq'
+		so that same value occurs to a serial attribute which is UNIQUE or a P.K.)
