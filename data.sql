@@ -1,6 +1,6 @@
 -- If there is already any data in these tables, empty it out.
 -- always remember 
--- ssh dbsrv1.cdf.utoronto.ca (or psql csc343h-sunlin3 then ssh dbsrv1.cdf.utoronto.ca) then \i data.sql
+-- ssh dbsrv1.cdf.utoronto.ca then psql csc343h-sunlin3 then \i data.sql
 
 TRUNCATE TABLE Result CASCADE;
 TRUNCATE TABLE Grade CASCADE;
